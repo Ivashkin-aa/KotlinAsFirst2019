@@ -76,9 +76,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minute
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
     val a = sagenes * 3
     val b = (a + arshins) * 16
-    val c = (b + vershoks) * 4.445
-    val d = c / 100
-    return d
+    return ((b + vershoks) * 4.445) / 100
 }
 //fun main() {
    // val metres = lengthInMeters(8,2,11)
@@ -91,7 +89,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(deg: Int, min: Int, sec: Int): Double = deg * 0.017 + min * 0.00029 + sec * 0.0000048
+fun angleInRadian(deg: Int, min: Int, sec: Int): Double = PI / (sec * 3600 + min * 60 + deg)
 //fun main() {
   //  val rad = angleInRadian(36,14,35)
     //println("RAD: $rad")
@@ -106,8 +104,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double = deg * 0.017 + min * 0.
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
     val a = sqr(x2 - x1)
     val b = sqr(y2 - y1)
-    val c = sqrt(a + b)
-    return c
+    return sqrt(a + b)
 }
 //fun main() {
   //  val otrezok = trackLength(3.0,0.0,0.0,4.0)
@@ -120,7 +117,7 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
  * Пользователь задает целое число, большее 100 (например, 3801).
  * Определить третью цифру справа в этом числе (в данном случае 8).
  */
-fun thirdDigit(number: Int): Int = (number/100)%10
+fun thirdDigit(number: Int): Int = (number / 100) % 10
 //fun main() {
   //  val cifra = thirdDigit(3801)
     //println("Third cifra: $cifra")
@@ -136,8 +133,7 @@ fun thirdDigit(number: Int): Int = (number/100)%10
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
     val a = hoursDepart * 60 + minutesDepart
     val b = hoursArrive * 60 + minutesArrive
-    val c = b - a
-    return c
+    return b - a
 }
 //fun main() {
   //  val minut = travelMinutes(9,25,13,1)
@@ -154,8 +150,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
 fun accountInThreeYears(initial: Int, percent: Int): Double {
     val a = 1 + percent/100.0
     val b = a.pow(3)
-    val c = initial * b
-    return c
+    return initial * b
 }
 
 
@@ -172,10 +167,9 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
  */
 fun numberRevert(number: Int): Int {
     val a = number / 100
-    val b = (number - (a * 100))/10
-    val c = number%10
-    val d = c * 100 + b * 10 + a
- return d
+    val b = number / 10 % 10
+    val c = number % 10
+    return c * 100 + b * 10 + a
 }
 
   fun main() {
