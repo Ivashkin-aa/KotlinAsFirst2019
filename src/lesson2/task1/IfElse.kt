@@ -4,6 +4,7 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -87,8 +88,9 @@ fun timeForHalfWay(
     t3: Double, v3: Double
 ): Double {
     val s = (t1 * v1 + t2 * v2 + t3 * v3)
-    val v = s / (t1 + t2 + t3)
-    return s / 2 / v
+    if (t1*v1 >= s/2) return s/2/v1
+    if (t1*v1 + t2*v2 >= s/2) return t1 + ((s/2 - t1*v1)/v2)
+    else return t1 + t2 + ((s/2 - t1*v1 - t2*v2)/v3)
 }
 
 /**
@@ -105,9 +107,9 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
+    if ((kingX == rookX2 || kingY == rookY2) && (kingX == rookX1 || kingY == rookY1)) return 3
     if (kingX == rookX1 || kingY == rookY1) return 1
     if (kingX == rookX2 || kingY == rookY2) return 2
-    if ((kingX == rookX2 || kingY == rookY2) && (kingX == rookX1 || kingY == rookY1)) return 3
     else return 0
 }
 
@@ -126,9 +128,9 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    if (kingX == rookX || kingY == rookY) return 1
-    if (kingY == kingX - bishopX + bishopY) return 2
     if ((kingX == rookX || kingY == rookY) && (kingY == kingX - bishopX + bishopY)) return 3
+    if (kingX == rookX || kingY == rookY) return 1
+    if ((abs(kingX - bishopX)) == (abs(kingY - bishopY))) return 2
     else return 0
 }
 
@@ -141,10 +143,10 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (sqr(a) < sqr(b) + sqr(c) || sqr(b) < sqr(a) + sqr(c) || sqr(c) < sqr(a) + sqr(b)) return 0
+    if (a > b + c || b > c + a || c > a + b) return -1
     if (sqr(a) == sqr(b) + sqr(c) || sqr(b) == sqr(a) + sqr(c) || sqr(c) == sqr(a) + sqr(b)) return 1
     if (sqr(a) > sqr(b) + sqr(c) || sqr(b) > sqr(a) + sqr(c) || sqr(c) > sqr(a) + sqr(b)) return 2
-    else return -1
+    else return 0
 }
 
 /**
@@ -156,10 +158,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (b > c && a < d) {
+    if (b >= c && d >= a) {
         if (a < c) {
-            if (d > b) return b - c
-            else return d - c
+            if (d < b) return d - c
+            else return b - c
         } else {
             if (d > b) return b - a
             else return d - a
