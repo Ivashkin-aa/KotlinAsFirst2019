@@ -49,8 +49,8 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 //fun main() {
-   // val x1x2 = quadraticRootProduct(1.0, 13.0, 42.0)
-  // println("Root product: $x1x2")
+// val x1x2 = quadraticRootProduct(1.0, 13.0, 42.0)
+// println("Root product: $x1x2")
 //}
 
 /**
@@ -61,8 +61,8 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  */
 fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minutes * 60 + seconds
 //fun main() {
- //  val otvet = seconds(8,20,35)
-  //  println("Otvet: $otvet")
+//  val otvet = seconds(8,20,35)
+//  println("Otvet: $otvet")
 //}
 
 
@@ -76,11 +76,11 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minute
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
     val a = sagenes * 3
     val b = (a + arshins) * 16
-    return ((b + vershoks) * 4.445) / 100
+    return (b + vershoks) * 4.445 / 100
 }
 //fun main() {
-   // val metres = lengthInMeters(8,2,11)
-   // println("Metr: $metres")
+// val metres = lengthInMeters(8,2,11)
+// println("Metr: $metres")
 //}
 
 /**
@@ -89,10 +89,10 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(deg: Int, min: Int, sec: Int): Double = (deg + (min + sec / 60.0)/60.0) / 180 * PI
+fun angleInRadian(deg: Int, min: Int, sec: Int): Double = (deg + (min + sec / 60.0) / 60.0) / 180 * PI
 //fun main() {
-  //  val rad = angleInRadian(36,14,35)
-    //println("RAD: $rad")
+//  val rad = angleInRadian(36,14,35)
+//println("RAD: $rad")
 //}
 
 /**
@@ -107,8 +107,8 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
     return sqrt(a + b)
 }
 //fun main() {
-  //  val otrezok = trackLength(3.0,0.0,0.0,4.0)
-    //println("Dlina otrezka: $otrezok")
+//  val otrezok = trackLength(3.0,0.0,0.0,4.0)
+//println("Dlina otrezka: $otrezok")
 //}
 
 /**
@@ -119,8 +119,8 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
  */
 fun thirdDigit(number: Int): Int = (number / 100) % 10
 //fun main() {
-  //  val cifra = thirdDigit(3801)
-    //println("Third cifra: $cifra")
+//  val cifra = thirdDigit(3801)
+//println("Third cifra: $cifra")
 //}
 
 /**
@@ -136,8 +136,8 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
     return b - a
 }
 //fun main() {
-  //  val minut = travelMinutes(9,25,13,1)
-    //println("Minut: $minut!")
+//  val minut = travelMinutes(9,25,13,1)
+//println("Minut: $minut!")
 //}
 
 /**
@@ -148,15 +148,15 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
 fun accountInThreeYears(initial: Int, percent: Int): Double {
-    val a = 1 + percent/100.0
+    val a = 1 + percent / 100.0
     val b = a.pow(3)
     return initial * b
 }
 
 
 //fun main() {
- // val rub = accountInThreeYears(100,10)
-  //println("Summa: $rub")
+// val rub = accountInThreeYears(100,10)
+//println("Summa: $rub")
 //}
 
 /**
@@ -172,7 +172,7 @@ fun numberRevert(number: Int): Int {
     return c * 100 + b * 10 + a
 }
 
-  fun main() {
-      val obrat = numberRevert(478)
-      println("$obrat")
-    }
+fun main() {
+    val obrat = numberRevert(478)
+    println("$obrat")
+}
