@@ -71,7 +71,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = if (n < 10) 1 else 1 + digitNumber(n / 10)
+fun digitNumber(n: Int): Int {
+    var count = 0
+    var number = n
+    do {
+        count += 1
+        number /= 10
+    } while (number > 0)
+    return count
+}
 
 
 /**
@@ -120,10 +128,7 @@ fun minDivisor(n: Int): Int {
     var del = n
     if (n == 2) return 2
     for (i in 2..sqrt(n.toDouble()).toInt()) {
-        if (n % i == 0) {
-            del = i
-            if (del > 1) break
-        }
+        if (n % i == 0) return i
     }
     return del
 }
@@ -136,10 +141,7 @@ fun minDivisor(n: Int): Int {
 fun maxDivisor(n: Int): Int {
     var max = 1
     for (i in n / 2 downTo 1) {
-        if (n % i == 0) {
-            max = i
-            if (max < n) break
-        }
+        if (n % i == 0) return i
     }
     return max
 }
@@ -189,14 +191,9 @@ fun collatzSteps(x: Int): Int {
     var count = 0
     var number = x
     while (number != 1) {
-        if (number % 2 != 0) {
-            count++
-            number = 3 * number + 1
-        }
-        if (number % 2 == 0) {
-            count++
-            number /= 2
-        }
+        count++
+        if (number % 2 != 0) number = 3 * number + 1
+        else number /= 2
     }
     return count
 }
@@ -211,19 +208,19 @@ fun collatzSteps(x: Int): Int {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */// Так и не разобрался, почему разница в сотых тут и в косинусе
 fun sin(x: Double, eps: Double): Double {
-    val z = x % PI
+    val z = x
     var sum = z
     var sin = z
     var kub = z
     var fc = 1.0
     var n = 1.0
-    while (abs(sin) > eps) {
+     do {
         fc *= (n + 1) * (n + 2)
         kub = -kub * z * z
         sin = kub / fc
         sum += sin
         n++
-    }
+    } while (abs(sin) > eps)
     return sum
 }
 
@@ -242,13 +239,13 @@ fun cos(x: Double, eps: Double): Double {
     var kv = x
     var fc = 1.0
     var n = 1.0
-    while (abs(cos) > eps) {
+    do {
         fc *= n + 1
         kv *= -x
         cos = kv / fc
         sum += cos
         n++
-    }
+    } while (abs(cos) > eps)
     return sum + 1
 }
 
@@ -281,15 +278,8 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var number = n
-    var a = 0
-    while (number > 0) {
-        a = 10 * a + number % 10
-        number /= 10
-    }
-    return n == a
-}
+fun isPalindrome(n: Int): Boolean = n == revert(n)
+
 
 /**
  * Средняя
@@ -301,7 +291,7 @@ fun isPalindrome(n: Int): Boolean {
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var a = n / 10
-    var b = n % 10
+    val b = n % 10
     while (a != 0) {
         if (a % 10 == b) a /= 10
         else true
@@ -318,6 +308,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
+fun call(n: Int, b : Int, s: Int): Int = (b / 10.0.pow(s - n) % 10).toInt()
 fun squareSequenceDigit(n: Int): Int {
     var a = 1
     var b = 1
@@ -334,7 +325,7 @@ fun squareSequenceDigit(n: Int): Int {
         if (s >= n) break
     }
     return if (s == n) b % 10
-    else (b / 10.0.pow(s - n) % 10).toInt()
+    else call(n,b,s)
 }
 
 /**
@@ -362,5 +353,5 @@ fun fibSequenceDigit(n: Int): Int {
         if (s >= n) break
     }
     return if (s == n) b % 10
-    else (b / 10.0.pow(s - n) % 10).toInt()
+    else call(n,b,s)
 }
