@@ -128,7 +128,7 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     if (kingX == rookX || kingY == rookY) {
-        return if ((kingY - bishopY == kingX - bishopX)) 3
+        return if (abs(kingY - bishopY) == abs(kingX - bishopX)) 3
         else 1
     }
     return if (abs(kingX - bishopX) == abs(kingY - bishopY)) 2

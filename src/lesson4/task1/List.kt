@@ -251,6 +251,10 @@ fun convert(n: Int, base: Int): List<Int> {
     var number = n
     var result = 0
     val a = mutableListOf<Int>()
+    if (number == 0) {
+        a.add(0)
+        return a
+    }
     while (number > 0) {
         result = number % base
         a.add(result)
@@ -290,10 +294,8 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var number = 0
-    var x = 0
-    for (element in digits.reversed()) {
+    for ((x, element) in digits.reversed().withIndex()) {
         number += (element * (base.toDouble()).pow(x)).toInt()
-        x++
     }
     return number
 }
@@ -430,7 +432,7 @@ fun russian(n: Int): String {
         }
         if (n > 999) {
             if ((n % 10000) / 1000 == 0) result += unitsTH[0]
-            if (number / 1000 == 1) result += unitsTH[1] + "тысяча"
+            if (number / 1000 == 1) result += unitsTH[1] + " тысяча"
             if (number / 1000 in 2..4) result += unitsTH[number / 1000] + " тысячи"
             if (number / 1000 in 5..9) result += unitsTH[number / 1000] + " тысяч"
             number %= 1000
