@@ -77,7 +77,7 @@ fun digitNumber(n: Int): Int {
     do {
         count += 1
         number /= 10
-    } while (number > 0)
+    } while (number != 0)
     return count
 }
 
@@ -208,19 +208,19 @@ fun collatzSteps(x: Int): Int {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */// Так и не разобрался, почему разница в сотых тут и в косинусе
 fun sin(x: Double, eps: Double): Double {
-    val z = x
-    var sum = z
+    val z = x % (2 * PI)
+    var sum = 0.0
     var sin = z
-    var kub = z
+    var d = z
     var fc = 1.0
-    var n = 1.0
-     do {
+    var n = 1
+    while (abs(sin) > eps) {
         fc *= (n + 1) * (n + 2)
-        kub = -kub * z * z
-        sin = kub / fc
+        d = -d * z * z
         sum += sin
-        n++
-    } while (abs(sin) > eps)
+        sin = d / fc
+        n += 2
+    }
     return sum
 }
 
@@ -234,19 +234,20 @@ fun sin(x: Double, eps: Double): Double {
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
 fun cos(x: Double, eps: Double): Double {
-    var sum = 0.0
-    var cos = x
-    var kv = x
+    val z = x % (2 * PI)
+    var sum = 1.0
+    var cos = z
+    var kv = 1.0
     var fc = 1.0
-    var n = 1.0
-    do {
-        fc *= n + 1
-        kv *= -x
+    var n = 1
+    while (abs(cos) > eps) {
+        fc *= (n + 1) * n
+        kv *= -z * z
         cos = kv / fc
         sum += cos
-        n++
-    } while (abs(cos) > eps)
-    return sum + 1
+        n += 2
+    }
+    return sum
 }
 
 /**
@@ -294,7 +295,7 @@ fun hasDifferentDigits(n: Int): Boolean {
     val b = n % 10
     while (a != 0) {
         if (a % 10 == b) a /= 10
-        else true
+        else return true
     }
     return false
 }
@@ -308,7 +309,8 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun call(n: Int, b : Int, s: Int): Int = (b / 10.0.pow(s - n) % 10).toInt()
+fun call(n: Int, b: Int, s: Int): Int = (b / 10.0.pow(s - n) % 10).toInt()
+
 fun squareSequenceDigit(n: Int): Int {
     var a = 1
     var b = 1
@@ -324,8 +326,7 @@ fun squareSequenceDigit(n: Int): Int {
         s += length
         if (s >= n) break
     }
-    return if (s == n) b % 10
-    else call(n,b,s)
+    return call(n, b, s)
 }
 
 /**
@@ -352,6 +353,5 @@ fun fibSequenceDigit(n: Int): Int {
         s += length
         if (s >= n) break
     }
-    return if (s == n) b % 10
-    else call(n,b,s)
+    return call(n, b, s)
 }
