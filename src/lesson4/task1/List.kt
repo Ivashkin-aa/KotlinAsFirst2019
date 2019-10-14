@@ -394,7 +394,7 @@ fun russian(n: Int): String {
     )
     val decades = listOf(
         "",
-        "десять",
+        " десять",
         " двадцать",
         " тридцать",
         " сорок",
