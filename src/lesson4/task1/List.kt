@@ -394,7 +394,7 @@ fun russian(n: Int): String {
     )
     val decades = listOf(
         "",
-        "",
+        "десять",
         " двадцать",
         " тридцать",
         " сорок",
@@ -416,12 +416,13 @@ fun russian(n: Int): String {
         " восемьсот",
         " девятьсот"
     )
+    if (number == 0) return "нуль"
     if (number / 1000 >= 1) {
         if (number / 100000 > 0) {
             result += hundreds[number / 100000]
             number %= 100000
         }
-        if (number / 1000 > 20) {
+        if (number / 1000 > 20 || number / 1000 == 10) {
             result += decades[number / 10000]
             number %= 10000
         }
