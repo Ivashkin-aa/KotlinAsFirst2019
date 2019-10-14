@@ -161,10 +161,10 @@ class Tests {
     @Tag("Normal")
     fun mergePhoneBooks() {
         assertEquals(
-            mapOf("Emergency" to "112"),
+            mapOf("Emergency" to "112, 911"),
             mergePhoneBooks(
                 mapOf("Emergency" to "112"),
-                mapOf("Emergency" to "112")
+                mapOf("Emergency" to "911")
             )
         )
         assertEquals(
