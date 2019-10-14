@@ -144,7 +144,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
         for (new in b)
             if (element == new) list.add(element)
     }
-    return list
+    return list.distinct()
 }
 
 /**
@@ -166,11 +166,11 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val new = mutableMapOf<String, String>()
-    for ((name, phone) in mapA) {
-        for ((newName, newPhone) in mapB) {
-            if (name == newName && phone != newPhone) new[name] = new.getOrDefault(name, phone) + ", " + newPhone
-            new += mapA + mapB
-        }
+    for ((name, phone) in mapA)
+        new[name] = new.getOrDefault(name, String()) + phone
+    for ((newName, newPhone) in mapB) {
+        if (newName !in new) new[newName] = new.getOrDefault(newName, String()) + newPhone
+        else if (mapA[newName] != mapB[newName]) new[newName] = new.getOrDefault(newName, String()) + ", " + newPhone
     }
     return new
 }
