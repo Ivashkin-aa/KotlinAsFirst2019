@@ -443,7 +443,7 @@ fun russian(n: Int): String {
         result += hundreds[number / 100]
         number %= 100
     }
-    if (number > 19) {
+    if (number > 19 || number == 10) {
         result += decades[number / 10]
         number %= 10
     }
