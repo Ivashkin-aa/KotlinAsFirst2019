@@ -2,6 +2,9 @@
 
 package lesson5.task1
 
+import lesson3.task1.collatzSteps
+import kotlin.math.min
+
 /**
  * Пример
  *
@@ -94,7 +97,6 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val map = mutableMapOf<Int, List<String>>()
     for ((name, grade) in grades) {
-        //println(names)
         map[grade] = map.getOrDefault(grade, listOf()) + name
     }
     return map
@@ -185,7 +187,15 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val map = mutableMapOf<String, List<Double>>()
+    val mav = mutableMapOf<String, Double>()
+    for ((stock, price) in stockPrices)
+        map[stock] = map.getOrDefault(stock, listOf()) + price
+    for ((stock) in map)
+        mav[stock] = (map[stock]!!.average())
+    return mav
+}
 
 /**
  * Средняя
@@ -202,7 +212,14 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    val map = mutableMapOf<String, List<Double>>()
+    for ((name, cost) in stuff)
+        map[cost.first] = map.getOrDefault(cost.first, listOf()) + cost.second
+    for ((key, value) in map)
+        if (key == kind) return (stuff.toList().first { it.second == Pair(kind, map[key]?.min()) }).first
+    return null
+}
 
 /**
  * Средняя
