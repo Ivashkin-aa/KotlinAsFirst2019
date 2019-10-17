@@ -239,7 +239,7 @@ fun symbol(word: String, list: MutableList<Char>): List<Char> {
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     val list = mutableListOf<Char>()
     if (word == "") return true
-    return symbol(word, list) == chars.sorted()
+    return symbol(word, list) == chars.distinct().sorted()
 }
 
 /**
