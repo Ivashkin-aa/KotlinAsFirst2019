@@ -422,7 +422,7 @@ fun russian(n: Int): String {
             result += hundreds[number / 100000]
             number %= 100000
         }
-        if (number / 1000 > 20 || number / 1000 == 10) {
+        if (number / 1000 > 19 || number / 1000 == 10) {
             result += decades[number / 10000]
             number %= 10000
         }
