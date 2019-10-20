@@ -254,7 +254,9 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    return (list.groupingBy { it }.eachCount().filter { it.value > 1 }.toMap())
+}
 
 /**
  * Средняя
@@ -320,7 +322,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (element in list) {
+        if (list.any { it + element == number && it!=element })
+            return list.indexOf(element) to list.indexOf(number - element)
+    }
+    return -1 to -1
+}
 
 /**
  * Очень сложная
