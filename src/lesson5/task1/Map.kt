@@ -2,9 +2,6 @@
 
 package lesson5.task1
 
-import lesson3.task1.collatzSteps
-import kotlin.math.min
-
 /**
  * Пример
  *
@@ -239,9 +236,8 @@ fun symbol(word: String, set: MutableSet<Char>): Set<Char> {
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     val set = mutableSetOf<Char>()
     val char = chars.toMutableList()
+    char.replaceAll { it.toLowerCase() }
     if (word == "") return true
-    println(symbol(word, set))
-    println(chars.toSet())
     return symbol(word, set) == char.toSet()
 }
 
@@ -274,6 +270,7 @@ fun hasAnagrams(words: List<String>): Boolean {
     for (element in words) {
         val set = mutableSetOf<Char>()
         val set1 = mutableSetOf<Char>()
+        println(symbol(element,set1))
         word -= element
         if (word.any { symbol(it, set) == symbol(element, set1) }) return true
         word += element
