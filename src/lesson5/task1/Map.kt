@@ -138,12 +138,12 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val list = mutableListOf<String>()
+    val name = mutableSetOf<String>()
     for (element in a) {
         for (new in b)
-            if (element == new) list.add(element)
+            if (element == new) name.add(element)
     }
-    return list.distinct()
+    return name.toList()
 }
 
 /**
@@ -168,8 +168,10 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     for ((name, phone) in mapA)
         new[name] = new.getOrDefault(name, String()) + phone
     for ((newName, newPhone) in mapB) {
-        if (newName !in new) new[newName] = new.getOrDefault(newName, String()) + newPhone
-        else if (mapA[newName] != mapB[newName]) new[newName] = new.getOrDefault(newName, String()) + ", " + newPhone
+        if (newName !in new)
+            new[newName] = new.getOrDefault(newName, String()) + newPhone
+        else if (mapA[newName] != mapB[newName])
+            new[newName] = new.getOrDefault(newName, String()) + ", " + newPhone
     }
     return new
 }
@@ -227,18 +229,12 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun symbol(word: String, set: MutableSet<Char>): Set<Char> {
-    for (char in word.toCharArray())
-        set += char.toLowerCase()
-    return set
-}
-
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val set = mutableSetOf<Char>()
+    val v = word.toCharArray().map { it.toChar().toLowerCase() }.toSet()
     val char = chars.toMutableList()
     char.replaceAll { it.toLowerCase() }
     if (word == "") return true
-    return symbol(word, set) == char.toSet()
+    return v == v.intersect(char.toSet())
 }
 
 /**
@@ -265,14 +261,13 @@ fun extractRepeats(list: List<String>): Map<String, Int> = (list.groupingBy { it
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
+fun symbol(word: String): List<Char> = word.toCharArray().map { it.toChar() }
+
 fun hasAnagrams(words: List<String>): Boolean {
     val word = words.toMutableList()
     for (element in words) {
-        val set = mutableSetOf<Char>()
-        val set1 = mutableSetOf<Char>()
-        println(symbol(element,set1))
         word -= element
-        if (word.any { symbol(it, set) == symbol(element, set1) }) return true
+        if (word.any { symbol(it) == symbol(it).intersect(symbol(element)) }) return true
         word += element
     }
     return false
@@ -302,7 +297,17 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val first = mutableSetOf<String>()
+    val last = mutableMapOf<String, Set<String>>()
+    for ((key, value) in friends) {
+        first += value
+        for (name in first)
+            first += friends.getOrDefault(name, setOf())
+        last[key] = first
+    }
+    return last
+}
 
 /**
  * Сложная

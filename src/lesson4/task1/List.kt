@@ -2,9 +2,7 @@
 
 package lesson4.task1
 
-import kotlinx.html.InputType
 import lesson1.task1.discriminant
-import lesson1.task1.sqr
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -276,12 +274,12 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    var result = ""
+    val result = StringBuilder()
     for (element in convert(n, base)) {
-        if (element < 10) result += element
-        else result += 'a' + (element - 10)
+        if (element < 10) result.append(element)
+        else result.append('a' + (element - 10))
     }
-    return result
+    return result.toString()
 }
 
 
@@ -315,7 +313,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     val list = mutableListOf<Int>()
     for (element in str) {
-        if (element.toInt() > 96) list.add(element.toInt() - 87)
+        if (element.toInt() >= 'a'.toInt()) list.add(element.toInt() - ('a'.toInt()-10))
         else list.add(element.toInt() - 48)
     }
     return decimal(list.toList(), base)
@@ -333,17 +331,17 @@ fun roman(n: Int): String {
     val numbers = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
     val rom = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
     val new = numbers.zip(rom).toMap()
-    var result = ""
+    val result = StringBuilder()
     var x = n
     for (element in numbers.reversed()) {
         while (x > 0) {
             if (x / element >= 1) {
-                result += new[element]
+                result.append(new[element])
                 x -= element
             } else break
         }
     }
-    return result
+    return result.toString()
 }
 
 /**
@@ -355,7 +353,7 @@ fun roman(n: Int): String {
  */
 fun russian(n: Int): String {
     var number = n
-    var result = ""
+    val result = StringBuilder()
     val units = listOf(
         "",
         " один",
@@ -419,35 +417,35 @@ fun russian(n: Int): String {
     if (number == 0) return "нуль"
     if (number / 1000 >= 1) {
         if (number / 100000 > 0) {
-            result += hundreds[number / 100000]
+            result.append(hundreds[number / 100000])
             number %= 100000
         }
         if (number / 1000 > 19 || number / 1000 == 10) {
-            result += decades[number / 10000]
+            result.append(decades[number / 10000])
             number %= 10000
         }
         if (number in 11000..19999) {
             number %= 10000
-            result += ten[number / 1000] + " тысяч"
+            result.append(ten[number / 1000] + " тысяч")
             number %= 1000
         }
         if (n > 999) {
-            if ((n % 10000) / 1000 == 0) result += unitsTH[0]
-            if (number / 1000 == 1) result += unitsTH[1] + " тысяча"
-            if (number / 1000 in 2..4) result += unitsTH[number / 1000] + " тысячи"
-            if (number / 1000 in 5..9) result += unitsTH[number / 1000] + " тысяч"
+            if ((n % 10000) / 1000 == 0) result.append(unitsTH[0])
+            if (number / 1000 == 1) result.append(unitsTH[1] + " тысяча")
+            if (number / 1000 in 2..4) result.append(unitsTH[number / 1000] + " тысячи")
+            if (number / 1000 in 5..9) result.append(unitsTH[number / 1000] + " тысяч")
             number %= 1000
         }
     }
     if (number / 100 > 0) {
-        result += hundreds[number / 100]
+        result.append(hundreds[number / 100])
         number %= 100
     }
     if (number > 19 || number == 10) {
-        result += decades[number / 10]
+        result.append(decades[number / 10])
         number %= 10
     }
-    if (number in 11..19) result += ten[number % 10]
-    if (number < 10) result += units[number]
-    return result.trim()
+    if (number in 11..19) result.append(ten[number % 10])
+    if (number < 10) result.append(units[number])
+    return result.toString().trim()
 }

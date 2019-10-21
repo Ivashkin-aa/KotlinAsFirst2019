@@ -316,14 +316,9 @@ fun squareSequenceDigit(n: Int): Int {
     var b = 1
     var s = 0
     for (i in 1..n) {
-        var length = 0
         a = i * i
         b = i * i
-        while (a > 0) {
-            length++
-            a /= 10
-        }
-        s += length
+        s += digitNumber(a)
         if (s >= n) break
     }
     return call(n, b, s)
@@ -343,14 +338,9 @@ fun fibSequenceDigit(n: Int): Int {
     var b = 1
     var s = 0
     for (i in 1..n) {
-        var length = 0
         a = fib(i)
         b = fib(i)
-        while (a > 0) {
-            length++
-            a /= 10
-        }
-        s += length
+        s += digitNumber(a)
         if (s >= n) break
     }
     return call(n, b, s)
