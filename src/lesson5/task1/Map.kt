@@ -230,16 +230,19 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun symbol(word: String, list: MutableList<Char>): List<Char> {
+fun symbol(word: String, set: MutableSet<Char>): Set<Char> {
     for (char in word.toCharArray())
-        list += char
-    return list.distinct().sorted()
+        set += char.toLowerCase()
+    return set
 }
 
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val list = mutableListOf<Char>()
+    val set = mutableSetOf<Char>()
+    val char = chars.toMutableList()
     if (word == "") return true
-    return symbol(word, list) == chars.distinct().sorted()
+    println(symbol(word, set))
+    println(chars.toSet())
+    return symbol(word, set) == char.toSet()
 }
 
 /**
@@ -254,9 +257,8 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> {
-    return (list.groupingBy { it }.eachCount().filter { it.value > 1 }.toMap())
-}
+fun extractRepeats(list: List<String>): Map<String, Int> = (list.groupingBy { it }.eachCount().filter { it.value > 1 })
+
 
 /**
  * Средняя
@@ -270,10 +272,10 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     val word = words.toMutableList()
     for (element in words) {
-        val list = mutableListOf<Char>()
-        val list1 = mutableListOf<Char>()
+        val set = mutableSetOf<Char>()
+        val set1 = mutableSetOf<Char>()
         word -= element
-        if (word.any { symbol(it, list) == symbol(element, list1) }) return true
+        if (word.any { symbol(it, set) == symbol(element, set1) }) return true
         word += element
     }
     return false
@@ -324,8 +326,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (element in list) {
-        if (list.any { it + element == number && it!=element })
-            return list.indexOf(element) to list.indexOf(number - element)
+        if (list.any { it + element == number && list.lastIndexOf(it) != list.indexOf(element) })
+            return list.indexOf(element) to list.lastIndexOf(number - element)
     }
     return -1 to -1
 }
