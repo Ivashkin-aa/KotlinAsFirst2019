@@ -304,7 +304,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         first += value
         for (name in first)
             first += friends.getOrDefault(name, setOf())
-        last[key] = first
+        last[key] = last.getOrDefault(key, setOf()) + first
+        first.clear()
     }
     return last
 }
