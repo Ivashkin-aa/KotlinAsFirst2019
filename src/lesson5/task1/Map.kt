@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import kotlin.math.max
+
 /**
  * Пример
  *
@@ -267,7 +269,6 @@ fun hasAnagrams(words: List<String>): Boolean {
     val word = words.toMutableList()
     for (element in words) {
         word -= element
-        println(symbol(element))
         if (word.any { symbol(it) == symbol(element) }) return true
         word += element
     }
@@ -301,6 +302,7 @@ fun hasAnagrams(words: List<String>): Boolean {
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val friend = friends.toMutableMap()
     val first = mutableSetOf<String>()
+    val first0 = mutableSetOf<String>()
     val second = mutableSetOf<String>()
     val last = mutableMapOf<String, Set<String>>()
     for ((key, value) in friend) {
@@ -312,7 +314,9 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     for ((key, value) in friend) {
         first += value
         for (name in first)
-            first += friend.getOrDefault(name, setOf())
+            first0 += friend.getOrDefault(name, setOf())
+        first += first0
+        first0.clear()
         last[key] = last.getOrDefault(key, setOf()) + first
         if (last[key]!!.contains(key)) last[key] = last[key]!!.minus(key)
         first.clear()
@@ -374,15 +378,14 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     for ((name, pair) in treasures) {
         list += pair
     }
-    if (list.any{ it.first < capacity }) {
-        for (element in list)
-            if (element.first < capacity && control + element.first < capacity) {
+    if (list.any { it.first <= capacity }) {
+        for (element in list.sortedBy { it.second })
+            if (element.first <= capacity && control + element.first <= capacity) {
                 control += element.first
                 list1 += element
             }
-    }
-    else return emptySet()
+    } else return emptySet()
     for (element in list1)
-        finish += treasures.toList().first { it.second == element}.first
+        finish += treasures.toList().first { it.second == element }.first
     return finish
 }

@@ -236,7 +236,7 @@ class Tests {
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
         assertTrue(canBuildFrom(listOf('A'), "a"))
-        assertTrue(canBuildFrom(listOf('a','z'), "a"))
+        assertTrue(canBuildFrom(listOf('a', 'z'), "a"))
     }
 
     @Test
@@ -261,7 +261,7 @@ class Tests {
     fun hasAnagrams() {
         assertFalse(hasAnagrams(emptyList()))
         assertTrue(hasAnagrams(listOf("рот", "свет", "тор")))
-        assertTrue(hasAnagrams(listOf("a", "", "e","")))
+        assertTrue(hasAnagrams(listOf("a", "", "e", "")))
         assertFalse(hasAnagrams(listOf("рот", "свет", "код", "дверь")))
     }
 
@@ -292,6 +292,19 @@ class Tests {
                     "Marat" to setOf("Mikhail", "Sveta"),
                     "Sveta" to setOf("Marat"),
                     "Mikhail" to setOf("Sveta")
+                )
+            )
+        )
+        assertEquals(
+            mapOf(
+                "1" to setOf("0", "2"),
+                "0" to setOf("1", "2"),
+                "2" to setOf()
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "1" to setOf("0", "2"),
+                    "0" to setOf("1")
                 )
             )
         )
@@ -333,6 +346,13 @@ class Tests {
             bagPacking(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                 450
+            )
+        )
+        assertEquals(
+            setOf("0"),
+            bagPacking(
+                mapOf("0" to (1 to 1)),
+                1
             )
         )
     }
