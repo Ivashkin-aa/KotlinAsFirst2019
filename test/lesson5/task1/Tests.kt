@@ -308,6 +308,22 @@ class Tests {
                 )
             )
         )
+        assertEquals(
+            mapOf(
+                "3" to setOf("0"),
+                "0" to setOf(),
+                "115" to setOf("3", "0", "1fe"),
+                "1fe" to setOf("3", "115", "0")
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "3" to setOf("0"),
+                    "0" to setOf(),
+                    "115" to setOf("1fe"),
+                    "1fe" to setOf("3", "115")
+                )
+            )
+        )
     }
 
     @Test
@@ -353,6 +369,13 @@ class Tests {
             bagPacking(
                 mapOf("0" to (1 to 1)),
                 1
+            )
+        )
+        assertEquals(
+            setOf("1", "0"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1)),
+                2
             )
         )
     }

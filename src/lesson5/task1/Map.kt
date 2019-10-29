@@ -168,7 +168,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val new = mutableMapOf<String, String>()
     for ((name, phone) in mapA)
-        new[name] = new.getOrDefault(name, String()) + phone
+        new[name] = mapA[name] ?: error("")
     for ((newName, newPhone) in mapB) {
         if (newName !in new)
             new[newName] = new.getOrDefault(newName, String()) + newPhone
@@ -301,8 +301,6 @@ fun hasAnagrams(words: List<String>): Boolean {
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val friend = friends.toMutableMap()
-    val first = mutableSetOf<String>()
-    val first0 = mutableSetOf<String>()
     val second = mutableSetOf<String>()
     val last = mutableMapOf<String, Set<String>>()
     for ((key, value) in friend) {
@@ -312,11 +310,19 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     for (new in second)
         if (!friend.contains(new)) friend += new to setOf()
     for ((key, value) in friend) {
-        first += value
-        for (name in first)
-            first0 += friend.getOrDefault(name, setOf())
-        first += first0
-        first0.clear()
+        val first = mutableSetOf<String>()
+        val first0 = mutableSetOf<String>()
+        val first1 = mutableSetOf<String>()
+        first0 += value
+        first1 += value
+        while (first0.size != 0) {
+            first += first0
+            for (name in first0)
+                first1 += friend.getOrDefault(name, setOf())
+            first0 += first1
+            first0.removeAll(first)
+            first += first1
+        }
         last[key] = last.getOrDefault(key, setOf()) + first
         if (last[key]!!.contains(key)) last[key] = last[key]!!.minus(key)
         first.clear()
