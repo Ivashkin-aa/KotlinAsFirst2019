@@ -315,7 +315,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         val first1 = mutableSetOf<String>()
         first0 += value
         first1 += value
-        while (first0.size != 0) {
+        while (first0.isNotEmpty()) {
             first += first0
             for (name in first0)
                 first1 += friend.getOrDefault(name, setOf())
@@ -377,6 +377,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val treasure = treasures.toMutableMap()
     val list = mutableListOf<Pair<Int, Int>>()
     val list1 = mutableListOf<Pair<Int, Int>>()
     val finish = mutableSetOf<String>()
@@ -391,7 +392,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 list1 += element
             }
     } else return emptySet()
-    for (element in list1)
-        finish += treasures.toList().first { it.second == element }.first
+    for (element in list1) {
+        finish += treasure.toList().first { it.second == element }.first
+        treasure.remove(treasure.toList().first { it.second == element }.first)
+    }
     return finish
 }
