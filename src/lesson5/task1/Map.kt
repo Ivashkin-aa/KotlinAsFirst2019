@@ -386,7 +386,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         list += pair
     }
     if (list.any { it.first <= capacity }) {
-        for (element in list.sortedBy { it.second })
+        for (element in list.sortedByDescending { it.second })
             if (element.first <= capacity && control + element.first <= capacity) {
                 control += element.first
                 list1 += element
