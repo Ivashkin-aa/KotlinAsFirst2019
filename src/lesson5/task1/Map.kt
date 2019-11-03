@@ -2,7 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.math.max
 
 /**
  * Пример
@@ -139,14 +138,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val name = mutableSetOf<String>()
-    for (element in a) {
-        for (new in b)
-            if (element == new) name.add(element)
-    }
-    return name.toList()
-}
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
 
 /**
  * Средняя
@@ -168,12 +160,12 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val new = mutableMapOf<String, String>()
     for ((name, phone) in mapA)
-        new[name] = mapA[name] ?: error("")
+        new[name] = mapA.getValue(name)
     for ((newName, newPhone) in mapB) {
         if (newName !in new)
-            new[newName] = new.getOrDefault(newName, String()) + newPhone
+            new[newName] = newPhone
         else if (mapA[newName] != mapB[newName])
-            new[newName] = new.getOrDefault(newName, String()) + ", " + newPhone
+            new[newName] = new[newName] + ", $newPhone"
     }
     return new
 }
@@ -217,9 +209,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     val map = mutableMapOf<String, List<Double>>()
     for ((name, cost) in stuff)
         map[cost.first] = map.getOrDefault(cost.first, listOf()) + cost.second
-    for ((key, value) in map)
-        if (key == kind) return (stuff.toList().first { it.second == Pair(kind, map[key]?.min()) }).first
-    return null
+    return if (map.contains(kind)) {
+        (stuff.toList().first { it.second == Pair(kind, map[kind]?.min()) }).first
+    } else null
 }
 
 /**
@@ -301,33 +293,33 @@ fun hasAnagrams(words: List<String>): Boolean {
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val friend = friends.toMutableMap()
-    val second = mutableSetOf<String>()
-    val last = mutableMapOf<String, Set<String>>()
+    val allFriend = mutableSetOf<String>()
+    val allFriendsForAll = mutableMapOf<String, Set<String>>()
     for ((key, value) in friend) {
-        second += key
-        second += value
+        allFriend += key
+        allFriend += value
     }
-    for (new in second)
+    for (new in allFriend)
         if (!friend.contains(new)) friend += new to setOf()
     for ((key, value) in friend) {
-        val first = mutableSetOf<String>()
-        val first0 = mutableSetOf<String>()
-        val first1 = mutableSetOf<String>()
-        first0 += value
-        first1 += value
-        while (first0.isNotEmpty()) {
-            first += first0
-            for (name in first0)
-                first1 += friend.getOrDefault(name, setOf())
-            first0 += first1
-            first0.removeAll(first)
-            first += first1
+        val allFriendsForOne = mutableSetOf<String>()
+        val controlFriends = mutableSetOf<String>()
+        val friendsForOne = mutableSetOf<String>()
+        controlFriends += value
+        friendsForOne += value
+        while (controlFriends.isNotEmpty()) {
+            allFriendsForOne += controlFriends
+            for (name in controlFriends)
+                friendsForOne += friend.getOrDefault(name, setOf())
+            controlFriends += friendsForOne
+            controlFriends.removeAll(allFriendsForOne)
+            allFriendsForOne += friendsForOne
         }
-        last[key] = last.getOrDefault(key, setOf()) + first
-        if (last[key]!!.contains(key)) last[key] = last[key]!!.minus(key)
-        first.clear()
+        allFriendsForAll[key] = allFriendsForAll.getOrDefault(key, setOf()) + allFriendsForOne
+        if (allFriendsForAll[key]!!.contains(key)) allFriendsForAll[key] = allFriendsForAll[key]!!.minus(key)
+        allFriendsForOne.clear()
     }
-    return last
+    return allFriendsForAll
 }
 
 /**
@@ -377,24 +369,26 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val treasure = treasures.toMutableMap()
-    val list = mutableListOf<Pair<Int, Int>>()
-    val list1 = mutableListOf<Pair<Int, Int>>()
-    val finish = mutableSetOf<String>()
-    var control = 0
-    for ((name, pair) in treasures) {
-        list += pair
-    }
-    if (list.any { it.first <= capacity }) {
-        for (element in list.sortedByDescending { it.second })
-            if (element.first <= capacity && control + element.first <= capacity) {
-                control += element.first
-                list1 += element
+    val map = mutableMapOf<Pair<String, Int>, Pair<Int, Set<String>>>()
+        for (i in treasures.keys.indices) {
+            for (j in 1..capacity) {
+                if (treasures.getValue(treasures.keys.elementAt(i)).first <= capacity) {
+                    if (treasures.getValue(treasures.keys.elementAt(i - 1)).first < treasures.getValue(
+                            treasures.keys.elementAt(i)
+                        ).first
+                    )
+                        map[treasures.keys.elementAt(i) to j] =
+                            treasures.getValue(treasures.keys.elementAt(i)).second to setOf(treasures.keys.elementAt(i))
+                    else map[treasures.keys.elementAt(i) to j] =
+                        map.getValue(treasures.keys.elementAt(i - 1) to j).first + map.getValue(
+                            treasures.keys.elementAt(
+                                i
+                            ) to capacity - j
+                        ).first to map.getValue(
+                            treasures.keys.elementAt(i - 1) to j
+                        ).second + map.getValue(treasures.keys.elementAt(i) to capacity - j).second
+                } else map[treasures.keys.elementAt(i) to j] = map.getValue(treasures.keys.elementAt(i - 1) to j)
             }
-    } else return emptySet()
-    for (element in list1) {
-        finish += treasure.toList().first { it.second == element }.first
-        treasure.remove(treasure.toList().first { it.second == element }.first)
-    }
-    return finish
+        }
+    return map[map.keys.last()]!!.second
 }

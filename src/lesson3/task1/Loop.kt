@@ -214,7 +214,7 @@ fun sin(x: Double, eps: Double): Double {
     var d = z
     var fc = 1.0
     var n = 1
-    while (abs(sin) > eps) {
+    while (abs(sin) >= eps) {
         fc *= (n + 1) * (n + 2)
         d = -d * z * z
         sum += sin
@@ -240,7 +240,7 @@ fun cos(x: Double, eps: Double): Double {
     var kv = 1.0
     var fc = 1.0
     var n = 1
-    while (abs(cos) > eps) {
+    while (abs(cos) >= eps) {
         fc *= (n + 1) * n
         kv *= -z * z
         cos = kv / fc
