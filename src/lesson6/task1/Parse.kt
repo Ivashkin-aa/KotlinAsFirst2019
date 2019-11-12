@@ -76,7 +76,7 @@ fun dateStrToDigit(str: String): String {
     val list = listOf(
         "",
         "января",
-        "феврадя",
+        "февраля",
         "марта",
         "апреля",
         "мая",
@@ -117,7 +117,7 @@ fun dateDigitToStr(digital: String): String {
     val list = listOf(
         "",
         "января",
-        "феврадя",
+        "февраля",
         "марта",
         "апреля",
         "мая",
@@ -174,7 +174,7 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    return if (!jumps.matches(Regex("""[\d\s-%]*"""))) -1
+    return if (!jumps.matches(Regex("""[\d\s-%]*""")) || jumps == "") -1
     else jumps.split(" ").filter { it != "-" && it != "%" }.max()?.toInt() ?: -1
 }
 
