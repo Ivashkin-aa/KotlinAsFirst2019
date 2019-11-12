@@ -368,26 +368,34 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
+fun indx(i: Int): Int {
+    var result = 0
+    result = if (i - 1 > 0) i-1
+    else 0
+    return result
+}
+
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val map = mutableMapOf<Pair<String, Int>, Pair<Int, Set<String>>>()
+    map[treasures.keys.first() to treasures.getValue(treasures.keys.first()).first] = treasures.getValue(treasures.keys.first()).second to setOf(treasures.keys.first())
         for (i in treasures.keys.indices) {
             for (j in 1..capacity) {
                 if (treasures.getValue(treasures.keys.elementAt(i)).first <= capacity) {
-                    if (treasures.getValue(treasures.keys.elementAt(i - 1)).first < treasures.getValue(
+                    if (treasures.getValue(treasures.keys.elementAt(indx(i))).first < treasures.getValue(
                             treasures.keys.elementAt(i)
                         ).first
                     )
                         map[treasures.keys.elementAt(i) to j] =
                             treasures.getValue(treasures.keys.elementAt(i)).second to setOf(treasures.keys.elementAt(i))
                     else map[treasures.keys.elementAt(i) to j] =
-                        map.getValue(treasures.keys.elementAt(i - 1) to j).first + map.getValue(
+                        map.getValue(treasures.keys.elementAt(indx(i)) to j).first + map.getValue(
                             treasures.keys.elementAt(
                                 i
                             ) to capacity - j
                         ).first to map.getValue(
-                            treasures.keys.elementAt(i - 1) to j
+                            treasures.keys.elementAt(indx(i)) to j
                         ).second + map.getValue(treasures.keys.elementAt(i) to capacity - j).second
-                } else map[treasures.keys.elementAt(i) to j] = map.getValue(treasures.keys.elementAt(i - 1) to j)
+                } else map[treasures.keys.elementAt(i) to j] = map.getValue(treasures.keys.elementAt(indx(i)) to j)
             }
         }
     return map[map.keys.last()]!!.second
