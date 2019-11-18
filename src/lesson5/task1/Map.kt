@@ -206,12 +206,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    val map = mutableMapOf<String, List<Double>>()
+    var company = ""
+    var min = Double.MAX_VALUE
     for ((name, cost) in stuff)
-        map[cost.first] = map.getOrDefault(cost.first, listOf()) + cost.second
-    return if (map.contains(kind)) {
-        (stuff.toList().first { it.second == Pair(kind, map[kind]?.min()) }).first
-    } else null
+        if (stuff.getValue(name).first == kind && stuff.getValue(name).second < min) {
+            min = stuff.getValue(name).second
+            company = name
+        }
+    return if (company != "") company
+    else null
 }
 
 /**
@@ -224,7 +227,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val v = word.toCharArray().map { it.toLowerCase() }.toSet()
+    val v = word.map { it.toLowerCase() }.toSet()
     val char = chars.toMutableList()
     char.replaceAll { it.toLowerCase() }
     if (word == "") return true
@@ -310,14 +313,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         while (controlFriends.isNotEmpty()) {
             allFriendsForOne += controlFriends
             for (name in controlFriends)
-                friendsForOne += friend.getOrDefault(name, setOf())
+                friendsForOne += friend[name]!!
             controlFriends += friendsForOne
             controlFriends.removeAll(allFriendsForOne)
             allFriendsForOne += friendsForOne
         }
         allFriendsForAll[key] = allFriendsForAll.getOrDefault(key, setOf()) + allFriendsForOne
         if (allFriendsForAll[key]!!.contains(key)) allFriendsForAll[key] = allFriendsForAll[key]!!.minus(key)
-        allFriendsForOne.clear()
     }
     return allFriendsForAll
 }
@@ -368,35 +370,26 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun indx(i: Int): Int {
-    var result = 0
-    result = if (i - 1 > 0) i-1
-    else 0
-    return result
-}
-
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val map = mutableMapOf<Pair<String, Int>, Pair<Int, Set<String>>>()
-    map[treasures.keys.first() to treasures.getValue(treasures.keys.first()).first] = treasures.getValue(treasures.keys.first()).second to setOf(treasures.keys.first())
-        for (i in treasures.keys.indices) {
-            for (j in 1..capacity) {
-                if (treasures.getValue(treasures.keys.elementAt(i)).first <= capacity) {
-                    if (treasures.getValue(treasures.keys.elementAt(indx(i))).first < treasures.getValue(
-                            treasures.keys.elementAt(i)
-                        ).first
-                    )
-                        map[treasures.keys.elementAt(i) to j] =
-                            treasures.getValue(treasures.keys.elementAt(i)).second to setOf(treasures.keys.elementAt(i))
-                    else map[treasures.keys.elementAt(i) to j] =
-                        map.getValue(treasures.keys.elementAt(indx(i)) to j).first + map.getValue(
-                            treasures.keys.elementAt(
-                                i
-                            ) to capacity - j
-                        ).first to map.getValue(
-                            treasures.keys.elementAt(indx(i)) to j
-                        ).second + map.getValue(treasures.keys.elementAt(i) to capacity - j).second
-                } else map[treasures.keys.elementAt(i) to j] = map.getValue(treasures.keys.elementAt(indx(i)) to j)
-            }
+    map["Пример" to 0] = 0 to emptySet()
+    for (i in 1..treasures.size) {
+        val name = treasures.keys.elementAt(i - 1)
+        val weight = treasures.getValue(treasures.keys.elementAt(i - 1)).first
+        val cost = treasures.getValue(treasures.keys.elementAt(i - 1)).second
+        for (nowCap in 1..capacity) {
+            val nowCost = map.getValue(map.keys.last()).first
+            val nowName = map.getValue(map.keys.last()).second
+            if (weight <= nowCap) {
+                if (nowCost < cost)
+                    map[name to weight] = cost to setOf(name)
+                else {
+                    if (capacity - nowCap != 0)
+                        map[name to weight] = nowCost to nowName + name
+                    else map[name to weight] = nowCost to nowName
+                }
+            } else map[map.keys.last()] = nowCost to nowName
         }
+    }
     return map[map.keys.last()]!!.second
 }

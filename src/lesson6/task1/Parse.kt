@@ -174,7 +174,7 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    return if (!jumps.matches(Regex("""[\d\s-%]*""")) || jumps == "") -1
+    return if (!jumps.matches(Regex("""\d+(\s([-%]|\d+))*""")) || jumps == "") -1
     else jumps.split(" ").filter { it != "-" && it != "%" }.max()?.toInt() ?: -1
 }
 
@@ -272,14 +272,32 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
+    if ((!roman.matches(Regex("""M*(CM)?D*(CD)?C*(XC)?L*(XL)?X*(IX)?V*(IV)?I*"""))) || (roman == "")) return -1
     val rom = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
     val numbers = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
     val new = rom.zip(numbers).toMap()
-    var x = 0
-    for (char in roman) {
-        x += new.getValue(char.toString())
+    var y = 0
+    var i = 0
+    while (i < roman.length - 1) {
+        val twoSymbol = roman[i].toString() + roman[i + 1].toString()
+        if (rom.contains(twoSymbol)) {
+            y += new.getValue(twoSymbol)
+            i += 2
+        } else {
+            y += new.getValue(roman[i].toString())
+            i += 1
+        }
     }
-    return x
+    if (roman.length > 1) {
+        if (rom.contains(roman[roman.length - 2].toString() + roman.last())) {
+            if (roman.length % 2 != 0) {
+                y -= new.getValue(roman[roman.length - 2].toString())
+                y += new.getValue(roman[roman.length - 2].toString() + roman.last())
+            }
+        } else y += new.getValue(roman.last().toString())
+    } else
+        y += new.getValue(roman.last().toString())
+    return y
 }
 
 /**
