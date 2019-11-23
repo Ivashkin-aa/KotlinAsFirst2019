@@ -290,7 +290,7 @@ fun fromRoman(roman: String): Int {
     }
     if (roman.length > 1) {
         if (rom.contains(roman[roman.length - 2].toString() + roman.last())) {
-            if (roman.length % 2 != 0) {
+            if (rom.contains(roman[roman.length - 2].toString() + rom.contains(roman[roman.length - 3].toString()))) {
                 y -= new.getValue(roman[roman.length - 2].toString())
                 y += new.getValue(roman[roman.length - 2].toString() + roman.last())
             }

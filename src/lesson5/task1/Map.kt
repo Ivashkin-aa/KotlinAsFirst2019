@@ -206,15 +206,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var company = ""
+    var company: String?
+    company = null
     var min = Double.MAX_VALUE
     for ((name, cost) in stuff)
         if (stuff.getValue(name).first == kind && stuff.getValue(name).second < min) {
             min = stuff.getValue(name).second
             company = name
         }
-    return if (company != "") company
-    else null
+    return company
 }
 
 /**
@@ -371,25 +371,26 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val map = mutableMapOf<Pair<String, Int>, Pair<Int, Set<String>>>()
-    map["Пример" to 0] = 0 to emptySet()
+    val map = mutableMapOf<Pair<String, Int?>, Pair<Int?, Set<String>>>()
+    map["Пример" to 1] = 0 to emptySet()
+    var oldName = map.keys.first().first
     for (i in 1..treasures.size) {
         val name = treasures.keys.elementAt(i - 1)
         val weight = treasures.getValue(treasures.keys.elementAt(i - 1)).first
         val cost = treasures.getValue(treasures.keys.elementAt(i - 1)).second
         for (nowCap in 1..capacity) {
-            val nowCost = map.getValue(map.keys.last()).first
-            val nowName = map.getValue(map.keys.last()).second
-            if (weight <= nowCap) {
-                if (nowCost < cost)
-                    map[name to weight] = cost to setOf(name)
-                else {
-                    if (capacity - nowCap != 0)
-                        map[name to weight] = nowCost to nowName + name
-                    else map[name to weight] = nowCost to nowName
-                }
-            } else map[map.keys.last()] = nowCost to nowName
+            val oldCost = map[oldName to nowCap]?.first ?: 0
+            val oldSetName = map[oldName to nowCap]?.second ?: emptySet()
+            if (weight <= nowCap && oldCost <= cost) {
+                if (nowCap - weight == 0)
+                    map[name to nowCap] = cost to setOf(name)
+                else
+                    map[name to nowCap] =
+                        (cost + (map[oldName to capacity - nowCap]?.first
+                            ?: 0)) to ((map[oldName to nowCap - weight]?.second ?: emptySet()) + name)
+            } else map[name to nowCap] = oldCost to oldSetName
         }
+        oldName = name
     }
     return map[map.keys.last()]!!.second
 }
