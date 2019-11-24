@@ -381,12 +381,12 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         for (nowCap in 1..capacity) {
             val oldCost = map[oldName to nowCap]?.first ?: 0
             val oldSetName = map[oldName to nowCap]?.second ?: emptySet()
-            if (weight <= nowCap && oldCost <= cost) {
+            if (weight <= nowCap && oldCost <= cost + (map[oldName to nowCap - weight]?.first ?: 0)) {
                 if (nowCap - weight == 0)
                     map[name to nowCap] = cost to setOf(name)
                 else
                     map[name to nowCap] =
-                        (cost + (map[oldName to capacity - nowCap]?.first
+                        (cost + (map[oldName to nowCap - weight]?.first
                             ?: 0)) to ((map[oldName to nowCap - weight]?.second ?: emptySet()) + name)
             } else map[name to nowCap] = oldCost to oldSetName
         }

@@ -227,6 +227,13 @@ class Tests {
                 "печенье"
             )
         )
+        assertEquals(
+            "",
+            findCheapestStuff(
+                mapOf("" to ("" to 1.79), "a" to ("пе3123ченье" to -1.79)),
+                ""
+            )
+        )
     }
 
     @Test
@@ -386,9 +393,16 @@ class Tests {
             )
         )
         assertEquals(
-            setOf("1", "0"),
+            setOf("1", "2"),
             bagPacking(
                 mapOf("0" to (1 to 1), "1" to (1 to 1), "2" to (1 to 1)),
+                2
+            )
+        )
+        assertEquals(
+            setOf("1", "0"),
+            bagPacking(
+                mapOf("0" to (1 to 2), "1" to (1 to 1)),
                 2
             )
         )
