@@ -2,7 +2,6 @@
 
 package lesson7.task1
 
-import lesson5.task1.extractRepeats
 import java.io.File
 
 /**
@@ -63,7 +62,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
         if (!text.contains(word.toLowerCase()))
             map[word] = 0
     }
-    for (word in substrings) {
+    for (word in substrings.toSet()) {
         for (element in list) {
             if (word.toLowerCase() == element)
                 map[word] = list.count { it == element }
@@ -87,8 +86,28 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val letters = setOf('ж', 'ч', 'ш', 'щ')
+    val replacement = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у', 'Ы' to 'И', 'Я' to 'А', 'Ю' to 'У')
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            for (inx in line.split(" ").indices) {
+                val word = line.split(" ").elementAt(inx)
+                if (word.isNotEmpty()) {
+                    it.write(word[0].toString())
+                    for (i in 1 until word.length) {
+                        if (word.elementAt(i) in replacement.keys && word.elementAt(i - 1).toLowerCase() in letters)
+                            it.write(replacement[word[i]].toString())
+                        else it.write(word[i].toString())
+                    }
+                    if (line.split(" ").lastIndexOf(line.split(" ").last()) != inx)
+                        it.write(" ")
+                }
+            }
+            it.newLine()
+        }
+    }
 }
+
 
 /**
  * Средняя
@@ -108,7 +127,15 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var max = 0
+    for (line in File(inputName).readLines())
+        if (line.trim().length > max) max = line.length
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            it.write(line.trim().padStart((max - line.trim().length) / 2 + line.trim().length))
+            it.newLine()
+        }
+    }
 }
 
 /**
