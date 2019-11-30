@@ -506,13 +506,35 @@ fun markdownToHtml(inputName: String, outputName: String) {
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val first = lhv.toString()
     val second = rhv.toString()
+    val sum = first.length + second.length
+    var i = 2
     File(outputName).bufferedWriter().use {
-        it.write(first)
+        it.write(first.padStart(sum))
         it.newLine()
-        it.write(" *")
-        it.write(second.padStart(first.length + second.length - 1))
+        it.write("*")
+        it.write(second.padStart(sum - 1))
         it.newLine()
-        it.write("".padStart(first.length + second.length - 1, '-'))
+        val finish = (lhv * rhv).toString()
+        if (sum > finish.length)
+         it.write("-".padStart(sum, '-'))
+        else it.write("-".padStart(finish.length, '-'))
+        it.newLine()
+        val nowR = (lhv * (rhv % 10)).toString()
+        it.write(nowR.padStart((sum - nowR.length + nowR.length)))
+        it.newLine()
+        var newR = rhv
+        newR /= 10
+        while (newR % 10 != 0) {
+            val newSymbol = (lhv * (newR % 10)).toString()
+            it.write("+")
+            it.write(newSymbol.padStart((sum - newSymbol.length) + newSymbol.length - i))
+            it.newLine()
+            newR /= 10
+            i++
+        }
+        it.write("-".padStart(sum, '-'))
+        it.newLine()
+        it.write(finish.padStart(sum - finish.length + finish.length))
     }
 }
 
