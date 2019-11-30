@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.StringBuilder
 
 /**
  * Пример
@@ -57,17 +58,16 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val list = mutableListOf<String>()
     val map = mutableMapOf<String, Int>()
     val text = File(inputName).readText().toLowerCase()
-    for (word in substrings) {
+    for (word in substrings.toSet()) {
         list += text.windowed(word.length).filter { it == word.toLowerCase() }
         if (!text.contains(word.toLowerCase()))
             map[word] = 0
     }
-    for (word in substrings.toSet()) {
+    for (word in substrings.toSet())
         for (element in list) {
             if (word.toLowerCase() == element)
                 map[word] = list.count { it == element }
         }
-    }
     return map
 }
 
@@ -90,18 +90,11 @@ fun sibilants(inputName: String, outputName: String) {
     val replacement = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у', 'Ы' to 'И', 'Я' to 'А', 'Ю' to 'У')
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            for (inx in line.split(" ").indices) {
-                val word = line.split(" ").elementAt(inx)
-                if (word.isNotEmpty()) {
-                    it.write(word[0].toString())
-                    for (i in 1 until word.length) {
-                        if (word.elementAt(i) in replacement.keys && word.elementAt(i - 1).toLowerCase() in letters)
-                            it.write(replacement[word[i]].toString())
-                        else it.write(word[i].toString())
-                    }
-                    if (line.split(" ").lastIndexOf(line.split(" ").last()) != inx)
-                        it.write(" ")
-                }
+            it.write(line[0].toString())
+            for (i in 1 until line.length) {
+                if (line.elementAt(i) in replacement.keys && line.elementAt(i - 1).toLowerCase() in letters)
+                    it.write(replacement[line[i]].toString())
+                else it.write(line[i].toString())
             }
             it.newLine()
         }
@@ -129,7 +122,7 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     var max = 0
     for (line in File(inputName).readLines())
-        if (line.trim().length > max) max = line.length
+        if (line.trim().length > max) max = line.trim().length
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
             it.write(line.trim().padStart((max - line.trim().length) / 2 + line.trim().length))
@@ -166,7 +159,37 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    var max = 0
+    for (line in File(inputName).readLines())
+        if (line.trim().length > max) max = line.trim().length
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            val del = line.trim().split(Regex("""\s+"""))
+            var nowMax = max
+            var n = 0
+            for (i in del.indices) {
+                val word = del.elementAt(i)
+                if ((del.size == 1) || i == del.lastIndex) it.write(word)
+                else {
+                    var spaceForOneWord = (max - del.sumBy { it.length }) / (del.size - 1)
+                    if ((max - del.sumBy { it.length }) % (del.size - 1) != 0)
+                        spaceForOneWord += 1
+                    if (n > 0) {
+                        it.write(word.padEnd(word.length + spaceForOneWord))
+                        nowMax -= word.length + spaceForOneWord
+                        n -= 1
+                    } else {
+                        if (nowMax - ((del.size - 1) * (spaceForOneWord - 1) + del.sumBy { it.length }) > 0) {
+                            it.write(word.padEnd(word.length + spaceForOneWord))
+                            n = nowMax - ((del.size - 1) * (spaceForOneWord - 1) + del.sumBy { it.length }) - 1
+                            nowMax -= word.length + spaceForOneWord
+                        } else it.write(word.padEnd(word.length + (spaceForOneWord - 1)))
+                    }
+                }
+            }
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -187,7 +210,16 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val map = mutableMapOf<String, Int>()
+    val words = File(inputName).readText().toLowerCase().split(Regex("""[^a-zа-яё]+""")).filter { it.isNotEmpty() }
+    for (word in words)
+        map[word.toLowerCase()] = words.count { it == word }
+    if (map.size > 20) {
+        return map.toList().sortedByDescending { it.second }.take(20).toMap()
+    }
+    return map
+}
 
 /**
  * Средняя
@@ -225,7 +257,22 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val map = mutableMapOf<String, String>()
+    for (i in dictionary.keys) {
+        val rep = dictionary.getValue(i)
+        map[i.toLowerCase().toString()] = rep.toLowerCase()
+        map[i.toUpperCase().toString()] = rep.take(1).toUpperCase() + rep.drop(1).toLowerCase()
+    }
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            for (word in line.split(Regex("""\s*"""))) {
+                if (map.containsKey(word))
+                    it.write(map[word]!!)
+                else it.write(word)
+            }
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -253,7 +300,18 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val set = mutableSetOf<String>()
+    val str = StringBuilder()
+    val output = File(outputName).bufferedWriter()
+    for (word in File(inputName).readLines())
+        if (word.toLowerCase().toSet().size == word.length)
+            set += word
+    val max = set.maxBy { it.length }
+    for (word in set)
+        if (word.length == max?.length ?: 0)
+            str.append("$word, ")
+    output.write(str.dropLast(2).toString())
+    output.close()
 }
 
 /**
@@ -446,7 +504,16 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val first = lhv.toString()
+    val second = rhv.toString()
+    File(outputName).bufferedWriter().use {
+        it.write(first)
+        it.newLine()
+        it.write(" *")
+        it.write(second.padStart(first.length + second.length - 1))
+        it.newLine()
+        it.write("".padStart(first.length + second.length - 1, '-'))
+    }
 }
 
 

@@ -71,33 +71,34 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+val months = listOf(
+    "",
+    "января",
+    "февраля",
+    "марта",
+    "апреля",
+    "мая",
+    "июня",
+    "июля",
+    "августа",
+    "сентября",
+    "октября",
+    "ноября",
+    "декабря"
+)
+
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
-    val list = listOf(
-        "",
-        "января",
-        "февраля",
-        "марта",
-        "апреля",
-        "мая",
-        "июня",
-        "июля",
-        "августа",
-        "сентября",
-        "октября",
-        "ноября",
-        "декабря"
-    )
-    var day = 0
-    var month = 0
-    var year = 0
+    val day: Int?
+    val month: Int?
+    val year: Int?
     if (parts.size != 3) return ""
-    if (list.contains(parts.elementAt(1)))
-        month = list.indexOf(parts.elementAt(1))
+    if (months.contains(parts.elementAt(1)))
+        month = months.indexOf(parts.elementAt(1))
     else return ""
-    year = parts.last().toInt()
-    if (parts.first().toInt() <= daysInMonth(month, year))
-        day = parts.first().toInt()
+    year = parts.last().toIntOrNull()
+    if (parts.first().toInt() <= daysInMonth(month, year!!))
+        day = parts.first().toIntOrNull()
     else return ""
     return String.format("%02d.%02d.%d", day, month, year)
 }
@@ -114,32 +115,18 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
-    val list = listOf(
-        "",
-        "января",
-        "февраля",
-        "марта",
-        "апреля",
-        "мая",
-        "июня",
-        "июля",
-        "августа",
-        "сентября",
-        "октября",
-        "ноября",
-        "декабря"
-    )
     val month = StringBuilder()
-    var year = 0
-    var day = 0
+    val year: Int?
+    val day: Int?
     if (parts.size != 3)
         return ""
     if (parts.elementAt(1).toIntOrNull() in 1..12)
-        month.append(list.elementAt(parts.elementAt(1).toInt()))
+        month.append(months.elementAt(parts.elementAt(1).toInt()))
     else return ""
-    year = parts.last().toInt()
-    if (parts.first().toInt() <= daysInMonth(parts.elementAt(1).toInt(), year))
-        day = parts.first().toInt()
+    year = parts.last().toIntOrNull()
+    val nowDay = parts.first().toIntOrNull()
+    if (nowDay!! <= daysInMonth(parts.elementAt(1).toInt(), year!!))
+        day = nowDay
     else return ""
     return String.format("%d %s %d", day, month, year)
 }
@@ -175,7 +162,7 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
     return if (!jumps.matches(Regex("""\d+(\s([-%]|\d+))*""")) || jumps == "") -1
-    else jumps.split(" ").filter { it != "-" && it != "%" }.max()?.toInt() ?: -1
+    else jumps.split(" ").filter { it != "-" && it != "%" }.max()!!.toInt()
 }
 
 /**
@@ -192,7 +179,7 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val jump = jumps.split(" ")
     val luck = mutableListOf<Int>()
-    if (!jumps.matches(Regex("""[\d\s-%+]*"""))) return -1
+    if (!jumps.matches(Regex("""(\d+[\s-%+]*)+"""))) return -1
     for (i in 1 until jump.size step 2)
         if (jump[i] == "+") luck += jump[i - 1].toInt()
     return luck.max() ?: -1
@@ -254,10 +241,12 @@ fun firstDuplicateIndex(str: String): Int {
 fun mostExpensive(description: String): String {
     if (description == "") return ""
     val str = description.split("; ")
-    val food = mutableMapOf<Double, String>()
-    for (i in str)
-        food[i.split(" ").last().toDouble()] = i.split(" ").first()
-    return food[food.keys.max()]!!
+    val food = mutableMapOf<Double?, String>()
+    for (i in str) {
+        val del = i.split(" ")
+        food[del.last().toDoubleOrNull()] = del.first()
+    }
+    return food[food.keys.maxBy { it!! }]!!
 }
 
 /**
@@ -288,11 +277,12 @@ fun fromRoman(roman: String): Int {
             i += 1
         }
     }
-    if (roman.length > 1) {
-        if (rom.contains(roman[roman.length - 2].toString() + roman.last())) {
-            if (rom.contains(roman[roman.length - 2].toString() + rom.contains(roman[roman.length - 3].toString()))) {
-                y -= new.getValue(roman[roman.length - 2].toString())
-                y += new.getValue(roman[roman.length - 2].toString() + roman.last())
+    if (roman.length > 2) {
+        val bck = roman[roman.length - 2].toString()
+        if (rom.contains(bck + roman.last())) {
+            if (rom.contains(bck + rom.contains(roman[roman.length - 3].toString()))) {
+                y -= new.getValue(bck)
+                y += new.getValue(bck + roman.last())
             }
         } else y += new.getValue(roman.last().toString())
     } else

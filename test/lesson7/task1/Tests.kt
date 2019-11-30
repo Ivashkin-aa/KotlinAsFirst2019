@@ -72,6 +72,10 @@ Basic, Ruby, Swift.
             mapOf("--" to 4, "ее" to 2, "животное" to 2, "." to 2),
             countSubstrings("input/substrings_in2.txt", listOf("--", "ее", "животное", "."))
         )
+        assertEquals(
+            mapOf("ба" to 2),
+            countSubstrings("input/c1", listOf("ба", "ба"))
+        )
     }
 
     @Test
@@ -96,6 +100,12 @@ Basic, Ruby, Swift.
  */"""
         )
         File("temp.txt").delete()
+        sibilants("input/c2.txt", "temp.txt")
+        assertFileContent(
+            "temp.txt",
+            "АЖ  ачжж -"
+        )
+        File("temp.txt").delete()
     }
 
     @Test
@@ -112,6 +122,12 @@ Basic, Ruby, Swift.
                                      Hello World
            Во входном файле с именем inputName содержится некоторый текст.
         Вывести его в выходной файл с именем outputName, выровняв по центру."""
+        )
+        File("temp.txt").delete()
+        centerFile("input/c3.txt", "temp.txt")
+        assertFileContent(
+            "temp.txt",
+            "аб"
         )
         File("temp.txt").delete()
 
