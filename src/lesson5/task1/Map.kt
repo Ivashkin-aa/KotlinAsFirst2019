@@ -294,35 +294,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val friend = friends.toMutableMap()
-    val allFriend = mutableSetOf<String>()
-    val allFriendsForAll = mutableMapOf<String, Set<String>>()
-    for ((key, value) in friend) {
-        allFriend += key
-        allFriend += value
-    }
-    for (new in allFriend)
-        if (!friend.contains(new)) friend += new to setOf()
-    for ((key, value) in friend) {
-        val allFriendsForOne = mutableSetOf<String>()
-        val controlFriends = mutableSetOf<String>()
-        val friendsForOne = mutableSetOf<String>()
-        controlFriends += value
-        friendsForOne += value
-        while (controlFriends.isNotEmpty()) {
-            allFriendsForOne += controlFriends
-            for (name in controlFriends)
-                friendsForOne += friend[name]!!
-            controlFriends += friendsForOne
-            controlFriends.removeAll(allFriendsForOne)
-            allFriendsForOne += friendsForOne
-        }
-        allFriendsForAll[key] = allFriendsForAll.getOrDefault(key, setOf()) + allFriendsForOne
-        if (allFriendsForAll[key]!!.contains(key)) allFriendsForAll[key] = allFriendsForAll[key]!!.minus(key)
-    }
-    return allFriendsForAll
-}
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
 /**
  * Сложная
@@ -341,13 +313,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+// Решение с вложенностью ^3
+/*{
     for (element in list) {
         if (list.any { it + element == number && list.lastIndexOf(it) != list.indexOf(element) })
             return list.indexOf(element) to list.lastIndexOf(number - element)
     }
     return -1 to -1
-}
+}*/
 
 /**
  * Очень сложная

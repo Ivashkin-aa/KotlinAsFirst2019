@@ -97,9 +97,11 @@ fun dateStrToDigit(str: String): String {
         month = months.indexOf(parts.elementAt(1))
     else return ""
     year = parts.last().toIntOrNull()
-    if (parts.first().toInt() <= daysInMonth(month, year!!))
+    if (year == null) return ""
+    if (parts.first().toInt() <= daysInMonth(month, year))
         day = parts.first().toIntOrNull()
     else return ""
+    if (day == null) return ""
     return String.format("%02d.%02d.%d", day, month, year)
 }
 
@@ -121,11 +123,12 @@ fun dateDigitToStr(digital: String): String {
     if (parts.size != 3)
         return ""
     if (parts.elementAt(1).toIntOrNull() in 1..12)
-        month.append(months.elementAt(parts.elementAt(1).toInt()))
+        month.append(months[parts[1].toInt()])
     else return ""
     year = parts.last().toIntOrNull()
     val nowDay = parts.first().toIntOrNull()
-    if (nowDay!! <= daysInMonth(parts.elementAt(1).toInt(), year!!))
+    if (nowDay == null || year == null) return ""
+    if (nowDay <= daysInMonth(parts[1].toInt(), year))
         day = nowDay
     else return ""
     return String.format("%d %s %d", day, month, year)
@@ -145,10 +148,10 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String {
-    return if (!phone.matches(Regex("""\+?\d+[\s-]*(\(\d+[\s-]*\d*\))*[\d\s-]*"""))) ""
+fun flattenPhoneNumber(phone: String): String =
+    if (!phone.matches(Regex("""\+?\d+[\s-]*(\(\d+[\s-]*\d*\))*[\d\s-]*"""))) ""
     else Regex("""[\s()-]""").replace(phone, "")
-}
+
 
 /**
  * Средняя
@@ -178,11 +181,12 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     val jump = jumps.split(" ")
-    val luck = mutableListOf<Int>()
+    val luck = mutableListOf<Int?>()
+    var max = -1
     if (!jumps.matches(Regex("""(\d+[\s-%+]*)+"""))) return -1
     for (i in 1 until jump.size step 2)
-        if (jump[i] == "+") luck += jump[i - 1].toInt()
-    return luck.max() ?: -1
+        if (jump[i] == "+") luck += jump[i - 1].toIntOrNull()
+    return luck.filterNotNull().max() ?: -1
 }
 
 
@@ -196,7 +200,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if ((!expression.matches(Regex("""\d*(\d [+-] \d*)*"""))) || (expression == ""))
+    if ((!expression.matches(Regex("""(\d+\s[+-]\s)*\d+"""))) || (expression == ""))
         throw IllegalArgumentException()
     val exp = expression.split(" ")
     var result = exp[0].toInt()

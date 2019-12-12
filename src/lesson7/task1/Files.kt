@@ -58,16 +58,8 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val list = mutableListOf<String>()
     val map = mutableMapOf<String, Int>()
     val text = File(inputName).readText().toLowerCase()
-    for (word in substrings.toSet()) {
-        list += text.windowed(word.length).filter { it == word.toLowerCase() }
-        if (!text.contains(word.toLowerCase()))
-            map[word] = 0
-    }
     for (word in substrings.toSet())
-        for (element in list) {
-            if (word.toLowerCase() == element)
-                map[word] = list.count { it == element }
-        }
+        map[word] = text.windowed(word.length).filter { it == word.toLowerCase() }.count()
     return map
 }
 
@@ -260,20 +252,19 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val map = mutableMapOf<String, String>()
     for (i in dictionary.keys) {
         val rep = dictionary.getValue(i)
+        map[i.toUpperCase().toString()] = rep.toLowerCase().capitalize()
         map[i.toLowerCase().toString()] = rep.toLowerCase()
-        map[i.toUpperCase().toString()] = rep.take(1).toUpperCase() + rep.drop(1).toLowerCase()
     }
     File(outputName).bufferedWriter().use {
-        for (line in File(inputName).readLines()) {
-            for (word in line.split(Regex("""\s*"""))) {
-                if (map.containsKey(word))
-                    it.write(map[word]!!)
-                else it.write(word)
-            }
-            it.newLine()
+        for (symbol in File(inputName).readText()) {
+            val nowSymbol = symbol.toString()
+            if (map.containsKey(nowSymbol))
+                it.write(map[nowSymbol]!!)
+            else it.write(nowSymbol)
         }
     }
 }
+
 
 /**
  * Средняя
@@ -300,14 +291,16 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    val set = mutableSetOf<String>()
+    val longWord = mutableSetOf<String>()
     val str = StringBuilder()
     val output = File(outputName).bufferedWriter()
+    if (File(inputName).readText().isEmpty())
+        output.close()
     for (word in File(inputName).readLines())
         if (word.toLowerCase().toSet().size == word.length)
-            set += word
-    val max = set.maxBy { it.length }
-    for (word in set)
+            longWord += word
+    val max = longWord.maxBy { it.length }
+    for (word in longWord)
         if (word.length == max?.length ?: 0)
             str.append("$word, ")
     output.write(str.dropLast(2).toString())
@@ -516,7 +509,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
         it.newLine()
         val finish = (lhv * rhv).toString()
         if (sum > finish.length)
-         it.write("-".padStart(sum, '-'))
+            it.write("-".padStart(sum, '-'))
         else it.write("-".padStart(finish.length, '-'))
         it.newLine()
         val nowR = (lhv * (rhv % 10)).toString()
@@ -560,6 +553,38 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use {
+        val first = lhv.toString()
+        val second = rhv.toString()
+        val sumLen = first.length + second.length + 3
+        val fin = (lhv / rhv).toString()
+        val finish = fin.split("").filter { it != "" }
+        it.write(" $first | $second")
+        it.newLine()
+        it.write("-")
+        val nowNumber = (finish[0].toInt() * rhv).toString()
+        it.write(nowNumber.padEnd((first.length + 3) - nowNumber.length + nowNumber.length))
+        it.write(fin)
+        it.newLine()
+        it.write("-".padStart(nowNumber.length + 1, '-'))
+        var i = 0
+        var newFirst = first
+        for (k in 0..finish.size - 2) {
+            val digits = finish[k + 1]
+            val newNumber = (finish[i].toInt() * rhv).toString()
+            val firstDigit = (newFirst.take(newNumber.length)).toInt() - newNumber.toInt()
+            val secondDigit = newFirst.elementAt(newNumber.length)
+            it.newLine()
+            it.write((firstDigit.toString() + secondDigit).padStart(newNumber.length + 2))
+            it.newLine()
+            it.write("-".padStart(newNumber.length + 1))
+            it.write((digits.toInt() * rhv).toString())
+            it.newLine()
+            it.write("-".padStart(newNumber.length + 1))
+            it.write("-".padEnd((firstDigit.toString() + secondDigit).length - 1, '-'))
+            newFirst = firstDigit.toString() + secondDigit
+            i++
+        }
+    }
 }
 
