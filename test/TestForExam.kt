@@ -1,5 +1,0 @@
-class TestForExam {
-    fun exam() {
-
-    }
-}

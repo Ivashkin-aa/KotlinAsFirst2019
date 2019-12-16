@@ -110,7 +110,7 @@ data class Segment(val begin: Point, val end: Point) {
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
 fun diameter(vararg points: Point): Segment {
-    if (points.size < 2) throw IllegalArgumentException()
+    require(points.size > 1)
     var max = 0.0
     var lineSeg = Segment(points.first(), points.first())
     for (point in points) {
@@ -180,14 +180,7 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line {
-    val first = s.begin
-    val second = s.end
-    if (first.x == second.x)
-        return Line(first, PI / 2)
-    val ang = (second.y - first.y) / (second.x - first.x)
-    return Line(first, atan(ang))
-}
+fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
 
 
 /**
@@ -225,7 +218,7 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  * Если в списке менее двух окружностей, бросить IllegalArgumentException
  */
 fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
-    if (circles.size < 2) throw IllegalArgumentException()
+    require(circles.size > 1)
     var min = Double.POSITIVE_INFINITY
     var pair = Pair(circles.first(), circles.first())
     for (circle in circles) {
@@ -250,8 +243,6 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    if ((a.x == b.x).equals(c.x) || (a.y == b.y).equals(c.y))
-        throw IllegalArgumentException()
     val m = bisectorByPoints(a, b)
     val n = bisectorByPoints(b, c)
     val center = m.crossPoint(n)
@@ -270,10 +261,5 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle = TODO()
-/*    if (points.isEmpty())
-        throw IllegalArgumentException()
-    if (points.size == 1)
-        return Circle(points[0], 0.0)
 
-}*/
 

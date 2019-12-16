@@ -182,7 +182,6 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val jump = jumps.split(" ")
     val luck = mutableListOf<Int?>()
-    var max = -1
     if (!jumps.matches(Regex("""(\d+[\s-%+]*)+"""))) return -1
     for (i in 1 until jump.size step 2)
         if (jump[i] == "+") luck += jump[i - 1].toIntOrNull()
@@ -250,7 +249,7 @@ fun mostExpensive(description: String): String {
         val del = i.split(" ")
         food[del.last().toDoubleOrNull()] = del.first()
     }
-    return food[food.keys.maxBy { it!! }]!!
+    return food[food.keys.filterNotNull().max()]!!
 }
 
 /**
@@ -265,7 +264,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    if ((!roman.matches(Regex("""M*(CM)?D*(CD)?C*(XC)?L*(XL)?X*(IX)?V*(IV)?I*"""))) || (roman == "")) return -1
+    if ((!roman.matches(Regex("""M*(CM)?D*(CD)?C*(XC)?L*(XL)?X*(IX)?V?(IV)?I{0,3}"""))) || (roman == "")) return -1
     val rom = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
     val numbers = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
     val new = rom.zip(numbers).toMap()

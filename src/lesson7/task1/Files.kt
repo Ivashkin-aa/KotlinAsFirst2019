@@ -82,11 +82,13 @@ fun sibilants(inputName: String, outputName: String) {
     val replacement = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у', 'Ы' to 'И', 'Я' to 'А', 'Ю' to 'У')
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            it.write(line[0].toString())
-            for (i in 1 until line.length) {
-                if (line.elementAt(i) in replacement.keys && line.elementAt(i - 1).toLowerCase() in letters)
-                    it.write(replacement[line[i]].toString())
-                else it.write(line[i].toString())
+            if (line.isNotEmpty()) {
+                it.write(line[0].toString())
+                for (i in 1 until line.length) {
+                    if (line.elementAt(i) in replacement.keys && line.elementAt(i - 1).toLowerCase() in letters)
+                        it.write(replacement[line[i]].toString())
+                    else it.write(line[i].toString())
+                }
             }
             it.newLine()
         }
@@ -152,8 +154,10 @@ fun centerFile(inputName: String, outputName: String) {
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
     var max = 0
-    for (line in File(inputName).readLines())
-        if (line.trim().length > max) max = line.trim().length
+    for (line in File(inputName).readLines()) {
+        val maxLen = line.trim().length
+        if (maxLen > max) max = maxLen
+    }
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
             val del = line.trim().split(Regex("""\s+"""))
@@ -361,7 +365,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             if (line.isEmpty()) it.write("</p><p>")
             for (i in 0 until line.length - 1) {
                 when (line[i]) {
-                    '*' -> if (line[i + 1] == '*') it.write("<b>") else {if (line[i-1]!='*') it.write("<i>") }
+                    '*' -> if (line[i + 1] == '*') it.write("<b>") else {
+                        if (line[i - 1] != '*') it.write("<i>")
+                    }
                     '~' -> if (line[i + 1] == '~') it.write("<s>")
                     else -> it.write(line[i].toString())
                 }

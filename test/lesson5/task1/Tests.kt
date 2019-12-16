@@ -230,7 +230,7 @@ class Tests {
         assertEquals(
             "",
             findCheapestStuff(
-                mapOf("" to ("" to 1.79), "a" to ("пе3123ченье" to -1.79)),
+                mapOf("" to ("" to 1.79), "a" to ("a" to 0.0)),
                 ""
             )
         )
@@ -336,10 +336,10 @@ class Tests {
     @Test
     @Tag("Hard")
     fun findSumOfTwo() {
-//        assertEquals(
-//            Pair(-1, -1),
-//            findSumOfTwo(emptyList(), 1)
-//        )
+        assertEquals(
+            Pair(-1, -1),
+            findSumOfTwo(emptyList(), 1)
+        )
         assertEquals(
             Pair(0, 2),
             findSumOfTwo(listOf(1, 2, 3), 4)

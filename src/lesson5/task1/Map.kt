@@ -296,6 +296,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
+
 /**
  * Сложная
  *
@@ -313,15 +314,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
-// Решение с вложенностью ^3
-/*{
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (element in list) {
         if (list.any { it + element == number && list.lastIndexOf(it) != list.indexOf(element) })
             return list.indexOf(element) to list.lastIndexOf(number - element)
     }
     return -1 to -1
-}*/
+}
 
 /**
  * Очень сложная
