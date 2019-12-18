@@ -3,6 +3,7 @@
 package lesson8.task1
 
 import lesson1.task1.sqr
+import java.lang.ArithmeticException
 import java.lang.IllegalArgumentException
 import kotlin.math.*
 
@@ -157,10 +158,15 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
     fun crossPoint(other: Line): Point {
+        if ((sin(angle - other.angle) == 0.0) || (cos(angle) == 0.0))
+            throw ArithmeticException()
         val x = (other.b * cos(angle) - b * cos(other.angle)) / sin(angle - other.angle)
         val y = (x * sin(angle) + b) / cos(angle)
-        if (angle == PI / 2)
+        if (angle == PI / 2) {
+            if (cos(other.angle) == 0.0)
+                throw ArithmeticException()
             return Point(x, (x * sin(other.angle) + other.b) / cos(other.angle))
+        }
         return Point(x, y)
     }
 

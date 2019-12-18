@@ -264,7 +264,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    if ((!roman.matches(Regex("""M*(CM)?D*(CD)?C*(XC)?L*(XL)?X*(IX)?V?(IV)?I{0,3}"""))) || (roman == "")) return -1
+    if ((!roman.matches(Regex("""M{0,3}(CM)?D*(CD)?C{0,3}(XC)?L*(XL)?X{0,3}(IX)?V?(IV)?I{0,3}"""))) || (roman == "")) return -1
     val rom = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
     val numbers = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
     val new = rom.zip(numbers).toMap()

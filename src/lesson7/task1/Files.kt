@@ -357,27 +357,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    File(outputName).bufferedWriter().use {
-        it.write("<html>")
-        it.write("<body>")
-        it.write("<p>")
-        for (line in File(inputName).readLines()) {
-            if (line.isEmpty()) it.write("</p><p>")
-            for (i in 0 until line.length - 1) {
-                when (line[i]) {
-                    '*' -> if (line[i + 1] == '*') it.write("<b>") else {
-                        if (line[i - 1] != '*') it.write("<i>")
-                    }
-                    '~' -> if (line[i + 1] == '~') it.write("<s>")
-                    else -> it.write(line[i].toString())
-                }
-            }
-            it.newLine()
-        }
-        it.write("</p>")
-        it.write("</body>")
-        it.write("</html>")
-    }
+    TODO()
 }
 
 /**
@@ -524,6 +504,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val first = lhv.toString()
     val second = rhv.toString()
     val sum = first.length + second.length
+    val lenForSpace = (lhv * rhv).toString().length - first.length + 1
     var i = 2
     File(outputName).bufferedWriter().use {
         it.write(first.padStart(sum))
